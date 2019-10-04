@@ -24,9 +24,7 @@ const Router = (props: any) => {
   );
 
   const [routes] = useState(initializeRoutes(props.routes));
-
   const { width, height } = getWidthAndHeight(props);
-
   const { history, isNavigatingBack } = state;
 
   const fullPackage = {
@@ -73,9 +71,7 @@ const Router = (props: any) => {
                   <View>
                     <AnimatedScreen
                       {...{
-                        ...props,
-                        ...state,
-                        ...routerActions,
+                        ...fullPackage,
                         width,
                         Component,
                         poppedRoute,
