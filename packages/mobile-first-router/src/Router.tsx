@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { always, compose, defaultTo } from 'ramda';
+import { always, defaultTo } from 'ramda';
 
 import {
   Wrapper,
@@ -9,62 +9,59 @@ import {
   View
 } from '@aloompa/mobile-first-components';
 
-import withRouter from './withRouter';
 import { MFNavigationConfig } from './MFNavigationTypes';
 import { AnimatedModalScreen } from './AnimatedModalScreen';
 import { AnimatedScreen } from './AnimatedScreen';
 import { getWidthAndHeight } from './util/getWidthAndHeight';
 import { getTitle, getTitleFromCache } from './util/getTitle';
+import routerActionsConfig, { getInitialState } from './routerActions';
 
 const Router = (props: any) => {
   const { useState, useEffect } = React;
-  console.log('routerProps::', props);
-
-  const [state, setState] = useState({
-    navbarHidden: false,
-    isNavigating: false,
-    destinations: [],
-    isNavigatingBack: false,
-    titleCache: {},
-    routeToPop: '',
-    history,
-    poppedRoute: { route: '' },
-    //activeTab,
-    isModal: false
-    //tabRoutes
-  });
+  const [state, routerActions] = routerActionsConfig(
+    useState(getInitialState(props)),
+    props
+  );
 
   const [routes] = useState(initializeRoutes(props.routes));
 
   const { width, height } = getWidthAndHeight(props);
 
-  useEffect(() => {
-    pushNewRoute({ ...props, routes });
-  }, [props.history.length]);
+  const { history, isNavigatingBack } = state;
+
+  const fullPackage = {
+    ...props,
+    ...state,
+    ...routerActions
+  };
 
   useEffect(() => {
-    popCurrentRoute({ ...props, routes });
-  }, [props.isNavigatingBack]);
+    pushNewRoute({ ...fullPackage, routes });
+  }, [history.length]);
 
-  const poppedRoute = props.poppedRoute.route;
+  useEffect(() => {
+    popCurrentRoute({ ...fullPackage, routes });
+  }, [isNavigatingBack]);
+
+  const poppedRoute = state.poppedRoute.route;
 
   return (
     <Wrapper>
       {props.renderTopNav({
-        ...props,
+        ...fullPackage,
         mode: 'screen',
         height: props.topNavHeight,
-        routeTitle: getTitle(props)
+        routeTitle: getTitle(fullPackage)
       })}
       <TabRouter
-        activeTabIndex={props.activeTabIndex}
-        setActiveTab={props.setActiveTab}
+        activeTabIndex={state.activeTabIndex}
+        setActiveTab={routerActions.setActiveTab}
         bottomTab={true}
-        viewHeightReduction={props.tabRoutes.length > 1 ? 102 : 50}
+        viewHeightReduction={state.tabRoutes.length > 1 ? 102 : 50}
         tabButtons={props.tabs ? props.tabs.map((tab) => tab.button) : []}
-        tabViews={props.tabRoutes.map(() => (
+        tabViews={state.tabRoutes.map(() => (
           <ContentArea>
-            {props.history
+            {history
               .filter((route) => {
                 const routeConfig = routes[route.route];
                 return routeConfig.mode !== 'modal';
@@ -77,6 +74,8 @@ const Router = (props: any) => {
                     <AnimatedScreen
                       {...{
                         ...props,
+                        ...state,
+                        ...routerActions,
                         width,
                         Component,
                         poppedRoute,
@@ -89,7 +88,7 @@ const Router = (props: any) => {
           </ContentArea>
         ))}
       />
-      {props.history
+      {history
         .filter((route) => {
           const routeConfig = routes[route.route];
           return routeConfig.mode === 'modal';
@@ -102,7 +101,7 @@ const Router = (props: any) => {
             <View>
               <AnimatedModalScreen
                 {...{
-                  ...props,
+                  ...fullPackage,
                   routeConfigs,
                   height,
                   Component,
@@ -136,7 +135,7 @@ const initializeRoutes = (routes) => {
 
 const pushNewRoute = (props) => {
   if (props.history.length > 1 && props.isNavigating) {
-    return props.navigateComplete();
+    return setTimeout(() => props.navigateComplete(), 300);
   } else {
     return;
   }
@@ -185,7 +184,7 @@ const fillEmptyTitles = (config: MFNavigationConfig) =>
 const createRoutes = (config: MFNavigationConfig) => {
   const configWithTitles = fillEmptyTitles(config);
 
-  return compose(withRouter)((props) =>
+  return (props) => () =>
     Router({
       ...props,
       ...{
@@ -193,8 +192,7 @@ const createRoutes = (config: MFNavigationConfig) => {
         renderTopNav,
         ...configWithTitles
       }
-    })
-  );
+    });
 };
 
 export default createRoutes;
