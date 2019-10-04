@@ -22,7 +22,7 @@ const Router = (props: any) => {
     useState(getInitialState(props)),
     props
   );
-
+  console.log('::props::', props);
   const [routes] = useState(initializeRoutes(props.routes));
   const { width, height } = getWidthAndHeight(props);
   const { history, isNavigatingBack } = state;
@@ -180,7 +180,7 @@ const fillEmptyTitles = (config: MFNavigationConfig) =>
 const createRoutes = (config: MFNavigationConfig) => {
   const configWithTitles = fillEmptyTitles(config);
 
-  return (props) => () =>
+  return (props) =>
     Router({
       ...props,
       ...{

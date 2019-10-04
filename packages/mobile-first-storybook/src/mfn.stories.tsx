@@ -97,6 +97,6 @@ const routeConfig = {
   topNavHeight: 52
 };
 
-const Router = createRoutes(routeConfig)({});
+const Router = createRoutes(routeConfig);
 
 storiesOf('Router', module).add('default', () => <Router />);
