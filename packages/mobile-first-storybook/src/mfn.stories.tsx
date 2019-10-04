@@ -99,16 +99,4 @@ const routeConfig = {
 
 const Router = createRoutes(routeConfig)({});
 
-// import { combineReducers } from 'redux';
-// import { createStore } from 'redux';
-
-// const combinedReducers = combineReducers({
-//   router: routerReducer({
-//     routeConfig,
-//     initialRoute: 'BrowseHome'
-//   })
-// });
-
-// const store = createStore();
-
 storiesOf('Router', module).add('default', () => <Router />);
