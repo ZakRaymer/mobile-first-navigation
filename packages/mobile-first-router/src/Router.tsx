@@ -18,6 +18,21 @@ import { getTitle, getTitleFromCache } from './util/getTitle';
 
 const Router = (props: any) => {
   const { useState, useEffect } = React;
+  console.log('routerProps::', props);
+
+  const [state, setState] = useState({
+    navbarHidden: false,
+    isNavigating: false,
+    destinations: [],
+    isNavigatingBack: false,
+    titleCache: {},
+    routeToPop: '',
+    history,
+    poppedRoute: { route: '' },
+    //activeTab,
+    isModal: false
+    //tabRoutes
+  });
 
   const [routes] = useState(initializeRoutes(props.routes));
 
