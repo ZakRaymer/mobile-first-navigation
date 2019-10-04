@@ -10,6 +10,8 @@ const TabButton = (props: {
   iconHeight: number;
   iconWidth: number;
   title: string;
+  titleColor?: string;
+  titleColorSelected?: string;
   onPress: Function;
 }) => (
   <Button onClick={() => props.onPress()} style={{ flex: 1 }}>
@@ -34,6 +36,9 @@ const TabButton = (props: {
       />
       <Text
         style={{
+          color: !props.titleColor
+            ? '#000'
+            : props[`titleColor${props.selected ? 'Selected' : ''}`],
           position: 'absolute',
           fontFamily: 'Inter-Regular',
           fontSize: 12,

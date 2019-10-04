@@ -2,9 +2,10 @@ import * as React from 'react';
 import { View } from './Primitives';
 
 const TabRouter = (props: {
+  barColor: string;
   activeTabIndex: number;
   setActiveTab: any;
-  bottomTab: boolean;
+  topTab?: boolean;
   tabButtons: any[];
   tabViews: any[];
   viewHeightReduction: number;
@@ -12,6 +13,7 @@ const TabRouter = (props: {
   const tabBar = (
     <View
       style={{
+        backgroundColor: props.barColor,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -32,7 +34,7 @@ const TabRouter = (props: {
 
   const view = [tabBar, tabView];
 
-  return <View>{props.bottomTab ? view.reverse() : view}</View>;
+  return <View>{props.topTab ? view : view.reverse()}</View>;
 };
 
 export default TabRouter;

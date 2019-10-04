@@ -48,14 +48,19 @@ const Router = (props: any) => {
       {props.renderTopNav({
         ...fullPackage,
         mode: 'screen',
-        height: props.topNavHeight,
+        topNavHeight: defaultTo(52, props.topNavHeight),
         routeTitle: getTitle(fullPackage)
       })}
       <TabRouter
+        barColor={defaultTo('#fff', props.tabBarColor)}
         activeTabIndex={state.activeTabIndex}
         setActiveTab={routerActions.setActiveTab}
-        bottomTab={true}
-        viewHeightReduction={state.tabRoutes.length > 1 ? 102 : 50}
+        topTab={props.topTabBar}
+        viewHeightReduction={
+          state.tabRoutes.length > 1
+            ? props.topNavHeight + 52
+            : props.topNavHeight
+        }
         tabButtons={props.tabs ? props.tabs.map((tab) => tab.button) : []}
         tabViews={state.tabRoutes.map(() => (
           <ContentArea>

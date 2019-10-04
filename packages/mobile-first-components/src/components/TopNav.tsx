@@ -7,7 +7,7 @@ const TopNav = (props) =>
     <View
       style={{
         width: '100%',
-        height: 50,
+        height: props.topNavHeight,
         justifyContent: 'space-between',
         flex: 1
       }}
@@ -15,8 +15,6 @@ const TopNav = (props) =>
       {props.history.length === 1 ? (
         <View
           style={{
-            padding: 7,
-            height: 10,
             position: 'absolute'
           }}
         />
@@ -24,14 +22,15 @@ const TopNav = (props) =>
         <View
           style={{
             textAlign: 'left',
-            padding: 7,
             position: 'absolute'
           }}
         >
           <Button onClick={() => props.navigateBack()}>
             <Text
               style={{
-                fontSize: 18
+                fontSize: 18,
+                height: 0,
+                lineHeight: `${props.topNavHeight}px`
               }}
             >
               {props.mode === 'modal' ? 'X' : '<'}
@@ -41,11 +40,17 @@ const TopNav = (props) =>
       )}
       <View
         style={{
-          padding: 7,
           textAlign: 'center'
         }}
       >
-        <Text>{props.routeTitle}</Text>
+        <Text
+          style={{
+            lineHeight: `${props.topNavHeight}px`,
+            height: 0
+          }}
+        >
+          {props.routeTitle}
+        </Text>
       </View>
     </View>
   );
